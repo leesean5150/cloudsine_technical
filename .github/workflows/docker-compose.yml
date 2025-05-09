@@ -8,15 +8,6 @@ jobs:
   docker-compose-ci:
     runs-on: ubuntu-latest
 
-    services:
-      docker:
-        image: docker:20.10.24-dind
-        privileged: true
-        ports:
-          - 5432:5432
-          - 8000:8000
-          - 80:80
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
