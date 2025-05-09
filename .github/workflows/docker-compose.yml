@@ -41,7 +41,7 @@ jobs:
           done
 
       - name: Test backend health endpoint
-        run: curl -f http://localhost:8000/docs
+        run: curl -f http://localhost/api/docs
 
       - name: Tear down
         run: docker-compose down
