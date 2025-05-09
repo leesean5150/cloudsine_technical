@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/home/user/app
+    user: user
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "localhost:8000/docs"]
+      interval: 10s
+      timeout: 5s
+      retries: 100
+      start_period: 30s
+
+  db:
+    image: postgres
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "admin", "-d", "files_backend", "-h", "localhost"]
+      interval: 5s
+      retries: 5
+
+  nginx:
+    build:
+      context: ./ui
+      dockerfile: ./docker/deploy/Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test: curl -f http://localhost
+      interval: 30s
+      timeout: 10s
+      retries: 100

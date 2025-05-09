@@ -1,0 +1,87 @@
+.analysis-card {
+  border: 1px solid #ccc;
+  padding: 0.75rem 2rem 2rem 2rem;
+  border-radius: 10px;
+  background: #fff;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+}
+
+.analysis-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.analysis-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  width: calc(50% - 0.625rem);
+}
+
+.color-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.label {
+  flex: 1;
+  text-transform: capitalize;
+  font-size: 1rem;
+}
+
+.value {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.toggle-button {
+  margin-top: 1rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.toggle-button:hover {
+  background-color: #115293;
+}
+
+.engine-details {
+  margin-top: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 0.75rem;
+}
+
+.engine-item {
+  margin-bottom: 0.75rem;
+  background: #f9f9f9;
+  padding: 0.75rem;
+  border-radius: 6px;
+}
+
+.engine-meta,
+.engine-result {
+  font-size: 0.9rem;
+  color: #555;
+  word-break: break-word;
+}
+
+.category.malicious {
+  color: #e53935;
+}
+
+.category.undetected {
+  color: #1e88e5;
+}
+
+.category.suspicious {
+  color: #fb8c00;
+}

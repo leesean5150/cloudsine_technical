@@ -1,0 +1,63 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/home/user/app
+    user: user
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "localhost:8000/docs"]
+      interval: 10s
+      timeout: 5s
+      retries: 100
+      start_period: 30s
+
+  db:
+    image: postgres
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "admin", "-d", "files_backend", "-h", "localhost"]
+      interval: 5s
+      retries: 5
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: ./docker/dev/Dockerfile
+    volumes:
+      - ./ui:/ui
+      - /ui/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
+      - WDS_SOCKET_PORT=3000
+      - WDS_SOCKET_HOST=0.0.0.0
+    command: ["npm", "run", "start"]
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test: curl -f http://localhost/api/docs
+      interval: 30s
+      timeout: 10s
+      retries: 100
+
+volumes:
+  pg_data:
+    driver: local
