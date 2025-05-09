@@ -26,7 +26,7 @@ jobs:
           for service in backend db nginx; do
             echo "Checking health for $service..."
             for i in {1..60}; do
-              status=$(docker inspect --format='{{.State.Health.Status}}' $(docker-compose ps -q $service))
+              status=$(docker inspect --format='{{.State.Health.Status}}' $(docker compose ps -q $service))
               echo "$service health: $status"
               if [ "$status" == "healthy" ]; then
                 break
