@@ -1,0 +1,56 @@
+name: CI - Docker Compose
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docker-compose-ci:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:20.10.24-dind
+        privileged: true
+        ports:
+          - 5432:5432
+          - 8000:8000
+          - 80:80
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Use .env.sample as .env
+        run: cp .env.sample .env
+
+      - name: Build and start containers
+        run: docker-compose -f docker-compose.yml up -d --build
+
+      - name: Wait for services to be healthy
+        run: |
+          for service in backend db nginx; do
+            echo "Checking health for $service..."
+            for i in {1..60}; do
+              status=$(docker inspect --format='{{.State.Health.Status}}' $(docker-compose ps -q $service))
+              echo "$service health: $status"
+              if [ "$status" == "healthy" ]; then
+                break
+              fi
+              sleep 5
+            done
+            if [ "$status" != "healthy" ]; then
+              echo "$service failed to become healthy"
+              docker-compose logs $service
+              exit 1
+            fi
+          done
+
+      - name: Test backend health endpoint
+        run: curl -f http://localhost:8000/docs
+
+      - name: Tear down
+        run: docker-compose down
