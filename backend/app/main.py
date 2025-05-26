@@ -17,6 +17,11 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def on_startup():
+    """
+    on start up of the application, check for the existence of the files table and create it if it
+    does no exist.
+    """
+
     query = """
     SELECT EXISTS (
         SELECT 1

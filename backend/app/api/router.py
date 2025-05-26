@@ -3,6 +3,8 @@ from fastapi import APIRouter
 from .test.router import router as test_router
 from .files.router import router as files_router
 
+# include test and file routes into the main route
+
 router = APIRouter()
 
 router.include_router(test_router)

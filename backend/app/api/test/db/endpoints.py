@@ -16,6 +16,9 @@ router = APIRouter()
     },
 )
 async def test_db_connection(conn: AsyncConnection = Depends(get_async_session)):
+    """
+    a test database connection endpoint which queries all files and returns the first one in the response body.
+    """
     try:
         async with conn.cursor() as cur:
             await cur.execute("SELECT * FROM files;")
