@@ -13,8 +13,10 @@ router = APIRouter()
 VIRUSTOTAL_API_URL = "https://www.virustotal.com/api/v3/files"
 VIRUSTOTAL_API_KEY = settings.VIRUSTOTAL_API_KEY
 
+# limit file size to 1mb
 MAX_FILE_SIZE = 1 * 1024 * 1024
 
+# predefine headers for TotalVirusAPI calls
 headers = {
     "x-apikey": VIRUSTOTAL_API_KEY
 }
@@ -23,6 +25,10 @@ headers = {
 async def get_files(
     conn: AsyncConnection = Depends(get_async_session)
 ):
+    """
+    get all files and return based on the fields required (can be edited under the for loop)
+    """
+
     try:
         query = """
             SELECT uuid, filename, created_at, analysis
@@ -55,8 +61,12 @@ async def get_files(
 
 async def scan_file(file: UploadFile = File(...)):
     """
-    with sanitization and secure uploading of files.
+    scan file with sanitization and secure uploading. commented out section uses MIME type checking which is
+    more secure, but was commented out because it rejects the obfuscated_cryptomine.js file. file size is checked
+    to reduce impact of DDOS attacks and file is renamed ot a netural extension to prevent accidental execution.
+    polling system is set up for uploading and scanning of the file.
     """
+
     try:
 
         # check file content to see if the type is what the extension actually is
@@ -115,6 +125,9 @@ async def save_file_analysis(
     analysis: dict,
     conn: AsyncConnection = Depends(get_async_session)
 ):
+    """
+    save the analysis of the scanned file.
+    """
     try:
         query = """
             INSERT INTO files (filename, analysis)
@@ -142,6 +155,9 @@ async def delete_file_analysis(
     id: str,
     conn: AsyncConnection = Depends(get_async_session)
 ):
+    """
+    delete a specific file analysis based on the uuid
+    """
     try:
         query = """
             DELETE FROM files

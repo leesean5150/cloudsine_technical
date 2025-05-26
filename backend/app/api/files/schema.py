@@ -4,6 +4,8 @@ from datetime import datetime
 from typing import Optional, Dict
 # import pytz
 
+# schema for data validation
+
 class SaveAnalysisRequest(BaseModel):
     filename: str
     analysis: Optional[Dict] = None

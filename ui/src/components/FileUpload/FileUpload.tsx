@@ -11,7 +11,7 @@ interface FileUploadProps {
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect, handleUploadClick, isPostRequestError, handleSaveFile }) => {
-  const MAX_FILE_SIZE = 0.5 * 1024 * 1024;
+  const MAX_FILE_SIZE = 1 * 1024 * 1024;
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");

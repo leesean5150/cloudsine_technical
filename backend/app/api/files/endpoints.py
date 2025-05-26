@@ -65,6 +65,9 @@ async def save_file_analysis(
     analysis: str = Form(...),
     conn: AsyncConnection = Depends(get_async_session)
 ):
+    """
+    Saves a file analysis.
+    """
     try:
         analysis_data: Dict[str, Any] = json.loads(analysis)
 
@@ -91,6 +94,9 @@ async def delete_file_analysis(
     id: str = Path(..., description="The ID of the file to delete"),
     conn: AsyncConnection = Depends(get_async_session)
 ):
+    """
+    Deletes a file analysis.
+    """
     try:
         return await handlers.delete_file_analysis(
             id=id,
